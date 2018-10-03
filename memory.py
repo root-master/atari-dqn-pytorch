@@ -6,7 +6,7 @@ Experience = namedtuple('Experience', 's a r sp done')
 
 class ExperienceMemory():
 	'''this expereince replay memory is optimized for l-bfgs'''
-	def __init__(self,size=1024):
+	def __init__(self,size=int(1E6)):
 		self.size = size
 		self.memory = [] # this is technically the overlap between samples
 
@@ -17,15 +17,16 @@ class ExperienceMemory():
 			self.memory.pop(0)
 			self.memory.append(*experience)
 
-	def sample(self,batch_size=32):
+	def sample(self,batch_size=32):		
 		states = np.empty([batch_size,4,84,84], dtype=np.uint8)
 		actions = np.empty([batch_size], dtype=np.uint8)
 		rewards = np.empty([batch_size], dtype=np.float32)
 		dones = np.empty([batch_size], dtype=np.uint8)
 		state_primes = np.empty([batch_size,4,84,84], dtype=np.uint8)
 
-		for i in range(0,batch_size): # get O_{k}
-			e = self.memory[i]
+		for i in range(0,batch_size):
+			j = random.randint(0,self.memory.__len__()-1)
+			e = self.memory[j]
 			states[i,:,:,:] = e.s
 			actions[i] = e.a
 			rewards[i] = e.r

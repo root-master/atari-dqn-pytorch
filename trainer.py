@@ -21,7 +21,7 @@ class Trainer():
 		self.testing_env = Environment(task=self.env.task) # testing environment
 		self.testing_scores = [] # record testing scores
 		self.epsilon_testing = 0.05
-		self.max_steps_testing = 10000
+		self.max_steps_testing = 1000
 		self.num_episodes_per_test = 10
 		# training parameters
 		self.max_iter = int(50E6)
@@ -30,15 +30,13 @@ class Trainer():
 		self.learning_freq = 4
 		self.save_model_freq = 50000
 		self.test_freq = 10000
-		self.subgoal_discovery_freq = 50000
 		self.epsilon_start = 1.0
 		self.epsilon_end = 0.1
 		self.epsilon = self.epsilon_start
-		self.epsilon_annealing_steps = 1000000
+		self.epsilon_annealing_steps = int(1E6)
 		self.repeat_noop_action = 0
-		self.save_results_freq = 100000
+		self.save_results_freq = int(1E5)
 		self.batch_size = 64
-		self.learning_freq = self.batch_size
 
 		self.__dict__.update(kwargs) # updating input kwargs params 
 
@@ -68,6 +66,7 @@ class Trainer():
 		self.episode_start_time = time.time()
 		S = self.env.reset()
 		self.s = self.four_frames_to_4_84_84(S)
+
 		for t in range(self.learning_starts): # fill initial expereince memory 
 			self.play()
 			self.step += 1
@@ -76,21 +75,21 @@ class Trainer():
 			self.play()
 			self.step += 1
 
-			if t>0 and (self.step % self.learning_freq == 0):
+			if (t > 0) and (self.step % self.learning_freq == 0):
 				self.controller.update_w()
 
-			if t>0 and (self.step % self.controller_target_update_freq == 0):
+			if (t > 0) and (self.step % self.controller_target_update_freq == 0):
 				self.controller.update_target_params()
 
-			if t>0 and (self.step % self.save_model_freq == 0):
-				model_save_path = './models/' + self.env.task + '_' + str(t) + '.model'
+			if (t > 0) and (self.step % self.save_model_freq == 0):
+				model_save_path = './models/' + self.env.task + '_' + str(self.step) + '.model'
 				self.controller.save_model(model_save_path=model_save_path)
 			
-			if (t>0) and (t % self.test_freq == 0): # test controller's performance
+			if (t > 0) and (self.step % self.test_freq == 0): # test controller's performance
 				self.test()
 
-			if (t>0) and (t % self.save_results_freq == 0):
-				results_file_path = './results/performance_results_' + str(t) + '.pkl'
+			if (t > 0) and (self.step % self.save_results_freq == 0):
+				results_file_path = './results/performance_results_' + str(self.step) + '.pkl'
 				with open(results_file_path, 'wb') as f: 
 					pickle.dump([self.episode_steps_list,
 								 self.episode_scores_list,

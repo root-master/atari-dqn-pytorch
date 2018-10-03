@@ -51,7 +51,7 @@ class Controller():
 		Q = DQN(in_channels=4, num_actions=num_actions).type(dtype)		
 		if load_pretrained:			
 			Q.load_state_dict(torch.load(saved_model_path))
-		Q_t = DQN(in_channels=5, num_actions=18).type(dtype)
+		Q_t = DQN(in_channels=4, num_actions=num_actions).type(dtype)
 		Q_t.load_state_dict(Q.state_dict())
 		Q_t.eval()
 		for param in Q_t.parameters():
@@ -63,7 +63,6 @@ class Controller():
 		if torch.cuda.device_count() > 1:
 			Q = nn.DataParallel(Q).to(self.device)
 			Q_t = nn.DataParallel(Q_t).to(self.device)
-		else:
 
 		self.batch_size = batch_size
 		self.Q = Q
@@ -111,8 +110,8 @@ class Controller():
 		q_t_p1 = q_t_p1.gather(1, a_prime.unsqueeze(1))
 		q_t_p1 = q_t_p1.squeeze()
 
-		error = rewards + self.gamma * (1 - intrinsic_dones) * q_t_p1 - q
-		target = rewards + self.gamma * (1 - intrinsic_dones) * q_t_p1
+		target = rewards + self.gamma * (1 - dones) * q_t_p1
+		error = target - q
 		clipped_error = -1.0 * error.clamp(-1, 1)
 		
 		self.optimizer.zero_grad()
