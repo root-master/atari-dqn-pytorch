@@ -82,14 +82,14 @@ class Trainer():
 				self.controller.update_target_params()
 
 			if (t > 0) and (self.step % self.save_model_freq == 0):
-				model_save_path = './models/' + self.env.task + '_' + str(self.step) + '.model'
+				model_save_path = './models/' + self.env.task + '_steps_' + str(self.step) + '.model'
 				self.controller.save_model(model_save_path=model_save_path)
 			
 			if (t > 0) and (self.step % self.test_freq == 0): # test controller's performance
 				self.test()
 
 			if (t > 0) and (self.step % self.save_results_freq == 0):
-				results_file_path = './results/performance_results_' + str(self.step) + '.pkl'
+				results_file_path = './results/performance_results_for_' + self.env.task + '_steps_' + str(self.step) + '.pkl'
 				with open(results_file_path, 'wb') as f: 
 					pickle.dump([self.episode_steps_list,
 								 self.episode_scores_list,
