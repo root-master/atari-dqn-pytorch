@@ -17,7 +17,8 @@ class Controller():
 				 batch_size=32,
 				 gamma=0.99,
 				 load_pretrained=False,
-				 saved_model_path='./models/a.model'):
+				 saved_model_path='./models/a.model',
+				 optim_method='RMSprop'):
 		
 		self.experience_memory = experience_memory # expereince replay memory
 		self.lr = lr # learning rate
@@ -68,8 +69,12 @@ class Controller():
 		self.Q = Q
 		self.Q_t = Q_t
 		# optimizer
-		optimizer = torch.optim.SGD(Q.parameters(), lr=self.lr)
-		# optimizer = optim.RMSprop(Q.parameters(),lr=lr, alpha=alpha, eps=eps)
+		if optim_method == 'SGD':
+			optimizer = torch.optim.SGD(Q.parameters(), lr=self.lr)
+		elif optim_method == 'RMSprop':
+			optimizer = optim.RMSprop(Q.parameters(),lr=lr, alpha=alpha, eps=eps)
+		else:
+			optimizer = optim.RMSprop(Q.parameters(),lr=lr, alpha=alpha, eps=eps)
 		self.optimizer = optimizer
 		print('init: Controller --> OK')
 

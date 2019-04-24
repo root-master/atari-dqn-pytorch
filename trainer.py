@@ -12,6 +12,7 @@ class Trainer():
 				 env=None,
 				 controller=None,
 				 experience_memory=None,
+				 max_iter=2000*1024,
 				 **kwargs):
 
 		self.env = env
@@ -24,7 +25,7 @@ class Trainer():
 		self.max_steps_testing = 1000
 		self.num_episodes_per_test = 10
 		# training parameters
-		self.max_iter = int(50E6)
+		self.max_iter = max_iter
 		self.controller_target_update_freq = 10000
 		self.learning_starts = 50000
 		self.learning_freq = 4
@@ -36,7 +37,6 @@ class Trainer():
 		self.epsilon_annealing_steps = int(1E6)
 		self.repeat_noop_action = 0
 		self.save_results_freq = int(1E5)
-		self.batch_size = 64
 
 		self.__dict__.update(kwargs) # updating input kwargs params 
 
@@ -81,21 +81,20 @@ class Trainer():
 			if (t > 0) and (self.step % self.controller_target_update_freq == 0):
 				self.controller.update_target_params()
 
-			if (t > 0) and (self.step % self.save_model_freq == 0):
-				model_save_path = './models/' + self.env.task + '_steps_' + str(self.step) + '.model'
-				self.controller.save_model(model_save_path=model_save_path)
+			# if (t > 0) and (self.step % self.save_model_freq == 0):
+			# 	model_save_path = './models/' + self.env.task + '_steps_' + str(self.step) + '.model'
+			# 	self.controller.save_model(model_save_path=model_save_path)
 			
 			if (t > 0) and (self.step % self.test_freq == 0): # test controller's performance
 				self.test()
 
-			if (t > 0) and (self.step % self.save_results_freq == 0):
-				results_file_path = './results/performance_results_for_' + self.env.task + '_steps_' + str(self.step) + '.pkl'
-				with open(results_file_path, 'wb') as f: 
-					pickle.dump([self.episode_steps_list,
-								 self.episode_scores_list,
-								 self.episode_rewards_list,
-								 self.episode_time_list,
-								 self.testing_scores], f)
+			results_file_path = './results/SGD_results_' + self.env.task + '_lr_' + str(self.controller.lr*100000) + '.pkl'
+			with open(results_file_path, 'wb') as f: 
+				pickle.dump([self.episode_steps_list,
+							 self.episode_scores_list,
+							 self.episode_rewards_list,
+							 self.episode_time_list,
+							 self.testing_scores], f)
 			
 	def play(self):
 		# self.env.render()
