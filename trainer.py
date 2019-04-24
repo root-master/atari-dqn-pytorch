@@ -88,7 +88,7 @@ class Trainer():
 			if (t > 0) and (self.step % self.test_freq == 0): # test controller's performance
 				self.test()
 
-			results_file_path = './results/SGD_results_' + self.env.task + '_lr_' + str(self.controller.lr*100000) + '.pkl'
+			results_file_path = './results/SGD_results_' + self.env.task + '_lr_' + str(self.controller.lr) + '.pkl'
 			with open(results_file_path, 'wb') as f: 
 				pickle.dump([self.episode_steps_list,
 							 self.episode_scores_list,
