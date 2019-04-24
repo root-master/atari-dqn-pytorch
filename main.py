@@ -6,6 +6,7 @@
 # task = 'Qbert-v0'
 # task = 'Seaquest-v0'
 # task = 'SpaceInvaders-v0'
+import argparse
 
 parser = argparse.ArgumentParser(description='Quasi-Newton DQN feat. PyTorch')
 parser.add_argument('--batch','-batch', type=int, default=32, metavar='b',
