@@ -9,6 +9,7 @@ task = 'SpaceInvaders-v0'
 from Environment import Environment
 env = Environment(task=task) 
 num_actions = env.env.action_space.n
+print('number of actions: ', num_actions)
 
 # create expereince memory
 from memory import ExperienceMemory 

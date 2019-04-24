@@ -68,7 +68,8 @@ class Controller():
 		self.Q = Q
 		self.Q_t = Q_t
 		# optimizer
-		optimizer = optim.RMSprop(Q.parameters(),lr=lr, alpha=alpha, eps=eps)
+		optimizer = torch.optim.SGD(Q.parameters(), lr=self.lr)
+		# optimizer = optim.RMSprop(Q.parameters(),lr=lr, alpha=alpha, eps=eps)
 		self.optimizer = optimizer
 		print('init: Controller --> OK')
 
