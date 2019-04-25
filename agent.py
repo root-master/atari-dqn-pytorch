@@ -18,14 +18,16 @@ class Controller():
 				 gamma=0.99,
 				 load_pretrained=False,
 				 saved_model_path='./models/a.model',
-				 optim_method='RMSprop'):
+				 optim_method='RMSprop',
+				 use_multiple_gpu=True):
 		
 		self.experience_memory = experience_memory # expereince replay memory
 		self.lr = lr # learning rate
 		self.alpha = alpha # optimizer parameter
 		self.eps = 0.01 # optimizer parameter
 		self.gamma = 0.99
-		self.num_actions = num_actions	
+		self.num_actions = num_actions
+		self.use_multiple_gpu = use_multiple_gpu	
 		# BUILD MODEL 
 		if torch.cuda.is_available():
 			self.device = torch.device("cuda:0")
@@ -61,7 +63,7 @@ class Controller():
 		Q = Q.to(self.device)
 		Q_t = Q_t.to(self.device)
 
-		if torch.cuda.device_count() > 1:
+		if torch.cuda.device_count() > 1 and self.use_multiple_gpu:
 			Q = nn.DataParallel(Q).to(self.device)
 			Q_t = nn.DataParallel(Q_t).to(self.device)
 

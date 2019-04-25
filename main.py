@@ -15,10 +15,8 @@ parser.add_argument('--task','-task', type=str, default='Breakout-v0', metavar='
                     help='choose an ATARI task to play')
 parser.add_argument('--optim','-optim', type=str, default='RMSProp', metavar='T',
                     help='choose an ATARI task to play')
-
 parser.add_argument('--lr','-lr', type=float, default=0.00025, metavar='T',
                     help='choose an ATARI task to play')
-
 parser.add_argument('--max-iter','-maxiter', type=int, default=2000*1024, metavar='max-iter',
                     help='max steps for Deep RL algorithm')
 
@@ -45,7 +43,8 @@ controller = Controller(experience_memory=experience_memory,
 						num_actions=num_actions,
 						lr=lr,
 						batch_size=batch_size,
-						optim_method=optim) 
+						optim_method=optim,
+						use_multiple_gpu=False) 
 
 # create the trainer
 from trainer import Trainer
