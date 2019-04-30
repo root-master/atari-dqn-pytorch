@@ -27,7 +27,7 @@ class Trainer():
 		# training parameters
 		self.max_iter = max_iter
 		self.controller_target_update_freq = 10000
-		self.learning_starts = 10000
+		self.learning_starts = 50000
 		self.learning_freq = 4
 		self.save_model_freq = 50000
 		self.test_freq = 10000
@@ -77,7 +77,6 @@ class Trainer():
 
 			if (t > 0) and (self.step % self.learning_freq == 0):
 				self.controller.update_w()
-				print('loss = ', self.controller.L)
 
 			if (t > 0) and (self.step % self.controller_target_update_freq == 0):
 				self.controller.update_target_params()

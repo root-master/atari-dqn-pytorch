@@ -1,7 +1,7 @@
 #!/bin/bash
 module load anaconda3
 source activate jacobenv
-declare -a tasks=("Enduro-v0" "Qbert-v0" "Seaquest-v0" "SpaceInvaders-v0")
+declare -a tasks=("BeamRider-v0" "Breakout-v0" "Enduro-v0" "Qbert-v0" "Seaquest-v0" "SpaceInvaders-v0")
 declare optim="SGD"
 declare batch=32
 
