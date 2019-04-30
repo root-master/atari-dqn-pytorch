@@ -131,7 +131,7 @@ class Controller():
 		self.optimizer.zero_grad()
 		self.loss = F.smooth_l1_loss(q, target)
 		self.loss.backward()
-		self.L = self.loss.data # compute loss
+		self.L = self.loss.data.cpu().numpy() # compute loss
 		self.loss_list.append(self.L) 		
 		# update weights
 		self.optimizer.step()
