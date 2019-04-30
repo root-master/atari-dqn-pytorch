@@ -27,7 +27,9 @@ class Controller():
 		self.eps = 0.01 # optimizer parameter
 		self.gamma = 0.99
 		self.num_actions = num_actions
-		self.use_multiple_gpu = use_multiple_gpu	
+		self.use_multiple_gpu = use_multiple_gpu
+		self.loss_list = []	
+		self.L = 0.0
 		# BUILD MODEL 
 		if torch.cuda.is_available():
 			self.device = torch.device("cuda:0")
@@ -91,6 +93,7 @@ class Controller():
 		return q_np
 
 	def update_w(self):
+		self.Q.train()
 		states, actions, rewards, state_primes, dones = \
 			self.experience_memory.sample(batch_size=self.batch_size)
 		x = torch.Tensor(states).type(self.dtype)	
@@ -106,6 +109,7 @@ class Controller():
 				actions = actions.to(self.device)
 				rewards = rewards.to(self.device)
 				dones = dones.to(self.device)
+
 		# forward path
 		q = self.Q.forward(x/255.0)
 		q = q.gather(1, actions.unsqueeze(1))
@@ -114,24 +118,21 @@ class Controller():
 		q_p1 = self.Q.forward(xp/255.0)
 		_, a_prime = q_p1.max(1)
 
-		q_t_p1 = self.Q_t.forward(xp)
+		q_t_p1 = self.Q_t.forward(xp/255.0)
 		q_t_p1 = q_t_p1.gather(1, a_prime.unsqueeze(1))
 		q_t_p1 = q_t_p1.squeeze()
 
 		target = rewards + self.gamma * (1 - dones) * q_t_p1
-		error = target - q
-		clipped_error = -1.0 * error.clamp(-1, 1)
-		
+
+		# error = target - q
+		# error = error.clamp(-1, 1)
+		# self.loss = 0.5 * torch.mean( error.pow(2) )
+
 		self.optimizer.zero_grad()
-		q.backward(clipped_error.data)
-		
-		# We can use Huber loss for smoothness
-		# loss = F.smooth_l1_loss(q, target)
-		# loss.backward()
-		
-		for param in self.Q.parameters():
-			param.grad.data.clamp_(-1, 1)
-		
+		self.loss = F.smooth_l1_loss(q, target)
+		self.loss.backward()
+		self.L = self.loss.data # compute loss
+		self.loss_list.append(self.L) 		
 		# update weights
 		self.optimizer.step()
 

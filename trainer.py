@@ -77,6 +77,7 @@ class Trainer():
 
 			if (t > 0) and (self.step % self.learning_freq == 0):
 				self.controller.update_w()
+				print('loss = ', self.controller.L)
 
 			if (t > 0) and (self.step % self.controller_target_update_freq == 0):
 				self.controller.update_target_params()
@@ -94,7 +95,8 @@ class Trainer():
 							 self.episode_scores_list,
 							 self.episode_rewards_list,
 							 self.episode_time_list,
-							 self.testing_scores], f)
+							 self.testing_scores,
+							 self.controller.loss_list], f)
 			
 	def play(self):
 		# self.env.render()

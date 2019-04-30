@@ -10,8 +10,25 @@ do
 	python main.py -task=$task -batch=32 -optim=$optim -lr=0.01
 done
 
+for task in ${tasks[@]}
+do
+	python main.py -task=$task -batch=32 -optim=$optim -lr=0.001
+done
+
+declare -a tasks=("Breakout-v0" "BeamRider-v0" "Enduro-v0" "Qbert-v0" "Seaquest-v0" "SpaceInvaders-v0")
+for task in ${tasks[@]}
+do
+	python main.py -task=$task -batch=32 -optim=$optim -lr=0.0001
+done
+
 declare -a tasks=("Breakout-v0" "BeamRider-v0" "Enduro-v0" "Qbert-v0" "Seaquest-v0" "SpaceInvaders-v0")
 for task in ${tasks[@]}
 do
 	python main.py -task=$task -batch=32 -optim=$optim -lr=0.00001
+done
+
+declare -a tasks=("Breakout-v0" "BeamRider-v0" "Enduro-v0" "Qbert-v0" "Seaquest-v0" "SpaceInvaders-v0")
+for task in ${tasks[@]}
+do
+	python main.py -task=$task -batch=32 -optim=$optim -lr=0.000001
 done
